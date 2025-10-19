@@ -1,0 +1,31 @@
+<odoo>
+    <record id="view_order_form_inherit_custom" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.custom</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <!-- add a new page/tab called Receipt -->
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="Receipt">
+                    <group>
+                        <group>
+                            <field name="receipt_number"/>
+                            <field name="receipt_total" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="receipt_customer_name" readonly="1"/>
+                            <field name="receipt_mobile" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="receipt_address" readonly="1" widget="text"/>
+                        </group>
+                    </group>
+                    <!-- Quick print button (action added via report xml) -->
+                    <footer>
+                        <button name="%(action_report_receipt)d" type="action" string="Print Receipt" class="btn-primary"/>
+                    </footer>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

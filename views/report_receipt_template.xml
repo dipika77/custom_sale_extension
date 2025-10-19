@@ -1,0 +1,73 @@
+<odoo>
+    <!-- Report action -->
+    <record id="action_report_receipt" model="ir.actions.report">
+        <field name="name">Sale Order Receipt</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">custom_sale_extension.report_sale_receipt</field>
+        <field name="print_report_name">'Receipt - %s' % (object.name)</field>
+    </record>
+
+    <!-- QWeb template for the receipt -->
+    <template id="report_sale_receipt">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Receipt</h2>
+                    <div class="row">
+                        <div>
+                            <strong>Receipt No:</strong>
+                            <span t-esc="doc.receipt_number or doc.name"/>
+                        </div>
+                        <div>
+                            <strong>Date:</strong>
+                            <span t-esc="doc.date_order and doc.date_order.strftime('%Y-%m-%d') or ''"/>
+                        </div>
+                    </div>
+                    <hr/>
+                    <h3>Customer</h3>
+                    <div>
+                        <div><strong>Name:</strong> <span t-esc="doc.receipt_customer_name or doc.partner_id.name"/></div>
+                        <div><strong>Mobile:</strong> <span t-esc="doc.receipt_mobile or ''"/></div>
+                        <div><strong>Address:</strong> <span t-esc="doc.receipt_address or ''"/></div>
+                    </div>
+                    <hr/>
+                    <h3>Items</h3>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Qty</th>
+                                <th>Unit Price</th>
+                                <th>Taxes</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="doc.order_line" t-as="l">
+                                <tr>
+                                    <td><span t-esc="l.product_id.name"/></td>
+                                    <td><span t-esc="l.product_uom_qty"/></td>
+                                    <td><span t-esc="l.price_unit"/></td>
+                                    <td>
+                                        <t t-foreach="l.tax_id" t-as="tax">
+                                            <span t-esc="tax.name"/> <t t-if="not loop.last">, </t>
+                                        </t>
+                                    </td>
+                                    <td><span t-esc="l.price_total"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <hr/>
+                    <div style="text-align:right;">
+                        <strong>Total:</strong> <span t-esc="doc.receipt_total or doc.amount_total"/>
+                    </div>
+                    <div style="margin-top:20px;">
+                        <strong>Thank you for your purchase!</strong>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
